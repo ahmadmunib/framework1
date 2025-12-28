@@ -1,0 +1,13 @@
+{
+    "name": "ahmadmunib/framework1",
+    "description": "Customized Framework for FictionX Products",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ahmad Munib"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
