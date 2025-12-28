@@ -1,0 +1,557 @@
+CUSTOM PHP FRAMEWORK SPECIFICATION
+==================================
+Project: Digital Intelligent Solutions Core PHP Framework
+Created: December 29, 2025
+Author: Ahmad - Technical Team Lead
+Constraints: No Composer, Pure PHP/JS only
+
+PURPOSE
+-------
+Build a Laravel-like development experience using core PHP without external dependencies.
+Create a maintainable, scalable framework that follows modern patterns while staying within company constraints.
+
+CORE FOUNDATION FEATURES
+========================
+
+1. AUTOLOADER (PSR-4 Compatible)
+   - File: /framework/Core/Autoloader.php
+   - Features:
+     * Namespace to directory mapping
+     * Class file location resolution
+     * Error handling for missing classes
+   - Usage: require_once 'framework/Core/Autoloader.php'; Autoloader::register();
+
+2. CONFIGURATION SYSTEM
+   - Directory: /config/
+   - Files: app.php, database.php, auth.php, cache.php
+   - Features:
+     * Central config management
+     * Environment-specific configs (dev/staging/prod)
+     * Dot notation access: config('database.host')
+   - Implementation: Array-based configs with helper function
+
+3. REQUEST/RESPONSE OBJECTS
+   - Files: /framework/Http/Request.php, /framework/Http/Response.php
+   - Features:
+     * Request: GET/POST data, headers, cookies, files, method detection
+     * Response: Status codes, headers, content types, redirects
+     * JSON response formatting helper
+
+4. DEPENDENCY INJECTION CONTAINER
+   - File: /framework/Core/Container.php
+   - Features:
+     * Service registration and resolution
+     * Automatic constructor injection
+     * Singleton pattern support
+     * Method injection for controllers
+
+5. ERROR & EXCEPTION HANDLING
+   - Files: /framework/Core/ErrorHandler.php, /framework/Core/ExceptionHandler.php
+   - Features:
+     * Custom error handlers (E_ALL reporting)
+     * Exception catching and rendering
+     * Error logging to files
+     * Development vs production mode (debug views)
+     * HTTP exception handling (404, 500 errors)
+
+ROUTING SYSTEM
+==============
+
+6. ROUTER
+   - File: /framework/Routing/Router.php
+   - Features:
+     * GET/POST/PUT/DELETE route registration
+     * Route parameters: /user/{id}
+     * Named routes: route('user.show', ['id' => 1])
+     * Route groups with prefixes and middleware
+     * Controller@method syntax support
+     * Route caching (file-based)
+   - Usage Example:
+     Router::get('/home', 'HomeController@index');
+     Router::group(['prefix' => 'admin', 'middleware' => 'auth'], function() {
+         Router::get('/dashboard', 'Admin\DashboardController@index');
+     });
+
+7. MIDDLEWARE SYSTEM
+   - Directory: /framework/Http/Middleware/
+   - Features:
+     * Middleware pipeline execution
+     * Before/after request handling
+     * Termination middleware
+     * Built-in middleware:
+       - Authentication
+       - CSRF protection
+       - CORS handling
+       - Maintenance mode
+   - Interface: handle($request, $next) method
+
+DATABASE LAYER
+==============
+
+8. DATABASE CONNECTION MANAGER
+   - File: /framework/Database/Connection.php
+   - Features:
+     * Multiple database support
+     * Connection pooling
+     * PDO wrapper with prepared statements
+     * Connection configuration from /config/database.php
+   - Usage: DB::connection('mysql')->query('SELECT * FROM users');
+
+9. QUERY BUILDER
+   - File: /framework/Database/QueryBuilder.php
+   - Features:
+     * Fluent interface for SQL queries
+     * Select/insert/update/delete operations
+     * Where clauses (where, orWhere, whereIn, etc.)
+     * Joins (inner, left, right)
+     * Aggregates (count, sum, avg)
+     * Pagination support
+   - Example: DB::table('users')->where('active', 1)->get();
+
+10. BASIC ORM (Active Record Pattern)
+    - Directory: /framework/Database/Models/
+    - Features:
+      * Model base class with magic getters/setters
+      * Table mapping and primary keys
+      * Relationships: hasOne, hasMany, belongsTo
+      * Timestamps management (created_at, updated_at)
+      * Soft deletes
+    - Example: $user = User::find(1); $user->posts()->get();
+
+11. MIGRATIONS SYSTEM
+    - Directory: /database/migrations/
+    - Features:
+      * File-based migration tracking
+      * Up/down methods for schema changes
+      * Migration runner CLI tool
+      * Schema builder methods (createTable, addColumn, etc.)
+    - Usage: php framework/cli migrate
+
+12. SEEDING SYSTEM
+    - Directory: /database/seeds/
+    - Features:
+      * Database seeding for test/demo data
+      * Seed class structure
+      * Faker-like data generation (custom implementation)
+    - Usage: php framework/cli seed
+
+SECURITY FEATURES
+=================
+
+13. AUTHENTICATION SYSTEM
+    - Directory: /framework/Auth/
+    - Features:
+      * User login/logout
+      * Session management
+      * Password hashing (bcrypt)
+      * Remember me functionality
+      * Authentication guards
+    - Usage: Auth::attempt($credentials); Auth::user();
+
+14. AUTHORIZATION (RBAC)
+    - Files: /framework/Auth/Authorization.php, /config/permissions.php
+    - Features:
+      * Role-based access control
+      * Permission checking: hasPermission('edit_posts')
+      * Policy classes for complex authorization
+      * Gates for simple authorization logic
+
+15. CSRF PROTECTION
+    - File: /framework/Http/Middleware/VerifyCsrfToken.php
+    - Features:
+      * Automatic token generation for forms
+      * Token validation for POST requests
+      * Token rotation
+      * Excluded URIs configuration
+
+16. INPUT VALIDATION
+    - File: /framework/Validation/Validator.php
+    - Features:
+      * Rule-based validation (required, email, max, min, etc.)
+      * Custom validation rules
+      * Validation error messages
+      * Form request validation classes
+    - Example: $validator = Validator::make($_POST, ['email' => 'required|email']);
+
+17. XSS & SQL INJECTION PREVENTION
+    - Features:
+      * Automatic output escaping in views
+      * Prepared statements wrapper
+      * Input sanitization helpers
+      * Content Security Policy headers
+
+FILE & STORAGE SYSTEM
+=====================
+
+18. FILE UPLOAD HANDLER
+    - File: /framework/Http/FileUpload.php
+    - Features:
+      * Secure file uploads with validation
+      * File type, size, extension validation
+      * File renaming and storage
+      * Multiple file upload support
+      * Cloud storage abstraction (AWS S3, local)
+    - Usage: $upload = FileUpload::handle('profile_image', ['max_size' => 2048]);
+
+19. FILE SYSTEM ABSTRACTION
+    - Directory: /framework/Filesystem/
+    - Features:
+      * Local file operations wrapper
+      * Directory creation/traversal
+      * File permissions management
+      * Storage drivers (local, s3)
+    - Example: Storage::put('uploads/file.txt', $contents);
+
+20. IMAGE PROCESSING
+    - File: /framework/Image/ImageProcessor.php
+    - Features:
+      * Basic image manipulation (resize, crop)
+      * Format conversion (jpg, png, webp)
+      * Quality optimization
+      * Watermarking support
+    - Usage: ImageProcessor::resize($imagePath, 800, 600)->save();
+
+VIEW & FRONTEND INTEGRATION
+===========================
+
+21. TEMPLATE ENGINE
+    - Directory: /framework/View/
+    - Features:
+      * Blade-like syntax (loops, conditionals, includes)
+      * Layouts and sections
+      * View composers for shared data
+      * CSRF field helper
+      * Form and URL generation helpers
+    - Example: @extends('layouts.app') @section('content')...@endsection
+
+22. ASSET MANAGEMENT
+    - Directory: /public/assets/
+    - Features:
+      * CSS/JS versioning (cache busting)
+      * Asset minification (basic)
+      * Asset bundling
+      * CDN support configuration
+    - Usage: asset('css/app.css?v=' . filemtime('public/css/app.css'));
+
+23. FORM HELPERS
+    - File: /framework/Html/FormBuilder.php
+    - Features:
+      * Form generation with validation errors
+      * CSRF token field
+      * Input types (text, select, checkbox, etc.)
+      * Model binding for edit forms
+    - Example: Form::open(['route' => 'user.update']); Form::text('name', $user->name);
+
+TESTING FRAMEWORK
+=================
+
+24. TEST RUNNER
+    - Directory: /tests/
+    - Files: /framework/Testing/TestRunner.php, /framework/Testing/TestCase.php
+    - Features:
+      * CLI test execution: php framework/cli test
+      * Test discovery (scans /tests directory)
+      * Test reporting (pass/fail counts)
+      * HTML test report generation
+    - Structure:
+      tests/
+        ├── Unit/
+        ├── Feature/
+        ├── TestCase.php
+        └── run_tests.php
+
+25. ASSERTION LIBRARY
+    - File: /framework/Testing/Assert.php
+    - Core Assertions:
+      * assertEqual($expected, $actual, $message)
+      * assertTrue($condition, $message)
+      * assertFalse($condition, $message)
+      * assertContains($needle, $haystack, $message)
+      * assertInstanceOf($class, $object, $message)
+      * assertResponseOk($response)
+      * assertSee($html, $text)
+
+26. HTTP TESTING
+    - File: /framework/Testing/HttpTest.php
+    - Features:
+      * Simulate HTTP requests (GET/POST)
+      * Test response status codes
+      * Check response content
+      * Test redirects
+      * Session and cookie testing
+    - Example: $response = $this->get('/home'); $response->assertStatus(200);
+
+27. DATABASE TESTING
+    - Features:
+      * Database transactions for test isolation
+      * Test data factories (array-based)
+      * Seed test databases
+      * Assert database records exist
+    - Usage: $this->seedTestData(); $this->assertDatabaseHas('users', ['email' => 'test@example.com']);
+
+DATA LOADING & LARGE TABLES
+===========================
+
+28. SERVER-SIDE PAGINATION
+    - File: /framework/Database/Paginator.php
+    - Features:
+      * Automatic pagination calculation
+      * Page size configuration
+      * Current page detection
+      * URL generation for pagination links
+      * Total items count
+    - Example: $paginator = Paginator::paginate($items, 20);
+
+29. AJAX PAGINATION COMPONENTS
+    - File: /public/js/pagination.js
+    - Features:
+      * Vanilla JS pagination without frameworks
+      * Loading indicators
+      * History API integration (back button support)
+      * Error handling for failed requests
+    - Usage: new AjaxPaginator({ container: '#data-table', endpoint: '/api/data' });
+
+30. INFINITE SCROLL
+    - File: /public/js/infinite-scroll.js
+    - Features:
+      * Scroll detection for loading more data
+      * Loading state management
+      * End of data detection
+      * Performance optimization (throttling)
+    - Usage: new InfiniteScroll({ element: '#content', loadMoreUrl: '/load-more' });
+
+31. COLUMN FILTERING & SORTING
+    - Files: /framework/Database/DataTable.php, /public/js/data-table.js
+    - Features:
+      * Server-side filtering by column
+      * Multi-column sorting
+      * Search across all columns
+      * Filter persistence (localStorage)
+      * Export to CSV functionality
+    - Example: $dataTable = DataTable::make($query)->filter($_GET)->sort($_GET);
+
+32. VIRTUAL SCROLLING (FOR 10,000+ ROWS)
+    - File: /public/js/virtual-scroll.js
+    - Features:
+      * Only render visible rows
+      * Dynamic row height calculation
+      * Smooth scrolling performance
+      * Windowing technique implementation
+    - Usage: new VirtualScroll({ container: '#table-container', rowHeight: 40 });
+
+33. DATA EXPORT UTILITIES
+    - File: /framework/Export/Exporter.php
+    - Features:
+      * CSV export with proper encoding
+      * Excel export (basic .xlsx generation)
+      * PDF export integration (TCPDF wrapper)
+      * Large dataset streaming (chunked export)
+    - Usage: Exporter::csv($data, 'users_export.csv');
+
+JAVASCRIPT INTEGRATION
+======================
+
+34. MINI HTMX REPLACEMENT
+    - File: /public/js/simple-loader.js
+    - Features:
+      * AJAX request handling with minimal code
+      * Target element replacement
+      * Loading states
+      * Error handling
+      * Form submission support
+    - Usage: SimpleLoader.load('#content', '/partial-content');
+
+35. FORM VALIDATION SYNC
+    - File: /public/js/validation.js
+    - Features:
+      * Client-side validation matching server rules
+      * Real-time validation feedback
+      * Error message display
+      * Form submission blocking on errors
+    - Usage: new FormValidator({ form: '#register-form', rules: serverRules });
+
+36. ASSET BUNDLING (SIMPLE)
+    - File: /framework/Assets/AssetBundler.php
+    - Features:
+      * CSS/JS concatenation
+      * Basic minification (whitespace removal)
+      * Cache busting via file hashes
+      * Development vs production modes
+    - Usage: AssetBundler::bundleCss(['style1.css', 'style2.css']);
+
+DEVELOPMENT UTILITIES
+=====================
+
+37. LOGGING SYSTEM
+    - Directory: /framework/Log/
+    - Features:
+      * Multiple log channels (file, email)
+      * Log levels (debug, info, warning, error)
+      * Daily log rotation
+      * Context logging (user ID, request ID)
+    - Usage: Log::info('User logged in', ['user_id' => 1]);
+
+38. CACHING SYSTEM
+    - Directory: /framework/Cache/
+    - Features:
+      * File-based caching
+      * Redis support (if available)
+      * Cache expiration
+      * Tag-based cache clearing
+      * Cache prefixes
+    - Usage: Cache::put('key', 'value', 3600); Cache::get('key');
+
+39. EVENT SYSTEM
+    - File: /framework/Events/EventDispatcher.php
+    - Features:
+      * Observer pattern implementation
+      * Event listeners registration
+      * Event broadcasting (basic)
+      * Queue support for events
+    - Example: Event::dispatch('user.registered', $user);
+
+40. HELPER FUNCTIONS LIBRARY
+    - File: /framework/Helpers/helpers.php
+    - Common Helpers:
+      * array_get(), array_set()
+      * str_slug(), str_limit()
+      * url(), asset(), route()
+      * env(), config()
+      * dd() - dump and die
+      * csrf_field(), method_field()
+
+DIRECTORY STRUCTURE
+===================
+
+project-root/
+├── framework/                  # Core framework files
+│   ├── Core/                   # Autoloader, Container, Config
+│   ├── Http/                   # Request, Response, Middleware
+│   ├── Routing/                # Router, Route classes
+│   ├── Database/               # Connection, QueryBuilder, ORM
+│   ├── Auth/                   # Authentication, Authorization
+│   ├── Validation/             # Validation classes
+│   ├── View/                   # Template engine
+│   ├── Filesystem/             # File operations
+│   ├── Image/                  # Image processing
+│   ├── Testing/                # Testing framework
+│   ├── Export/                 # Data export utilities
+│   ├── Log/                    # Logging system
+│   ├── Cache/                  # Caching system
+│   ├── Events/                 # Event system
+│   ├── Helpers/                # Helper functions
+│   └── cli.php                 # Command line interface
+├── app/                        # Application specific code
+│   ├── Http/
+│   │   ├── Controllers/        # Controllers
+│   │   ├── Middleware/         # Custom middleware
+│   │   └── Requests/           # Form requests
+│   ├── Models/                 # Eloquent models
+│   ├── Services/               # Business logic services
+│   ├── Providers/              # Service providers
+│   └── Events/                 # Application events
+├── config/                     # Configuration files
+├── database/
+│   ├── migrations/             # Database migrations
+│   └── seeds/                  # Database seeds
+├── public/                     # Web root
+│   ├── assets/                 # CSS, JS, images
+│   │   ├── css/
+│   │   ├── js/
+│   │   └── img/
+│   ├── index.php               # Front controller
+│   └── .htaccess               # URL rewriting
+├── resources/
+│   ├── views/                  # Blade templates
+│   ├── lang/                   # Language files
+│   └── assets/                 # Source assets (for compilation)
+├── storage/
+│   ├── cache/                  # Cached files
+│   ├── logs/                   # Log files
+│   ├── framework/              # Framework cache (routes, config)
+│   └── uploads/                # User uploaded files
+├── tests/                      # Test files
+│   ├── Unit/
+│   ├── Feature/
+│   └── TestCase.php
+├── vendor/                     # Third-party libraries (minimal, if any)
+├── .gitignore
+├── README.md
+└── FRAMEWORK_ROADMAP.txt       # THIS FILE
+
+IMPLEMENTATION PHASES
+=====================
+
+PHASE 1: CORE FOUNDATION (Weeks 1-2)
+- [ ] Autoloader implementation
+- [ ] Configuration system
+- [ ] Request/Response objects
+- [ ] Basic routing system
+- [ ] Database connection manager
+- [ ] Error handling system
+- [ ] Front controller setup
+
+PHASE 2: DEVELOPER EXPERIENCE (Weeks 3-4)
+- [ ] Template engine with layouts
+- [ ] Authentication system
+- [ ] Middleware pipeline
+- [ ] Form helpers and validation
+- [ ] File upload handler
+- [ ] Basic testing framework (assertions, test runner)
+- [ ] Pagination system
+
+PHASE 3: ADVANCED FEATURES (Weeks 5-6)
+- [ ] Query builder and ORM
+- [ ] Migrations and seeding system
+- [ ] Authorization (RBAC)
+- [ ] Caching system
+- [ ] AJAX data loading components
+- [ ] Data export utilities
+- [ ] Logging system
+
+PHASE 4: OPTIMIZATION & POLISH (Weeks 7-8)
+- [ ] Performance optimization (caching, lazy loading)
+- [ ] Virtual scrolling for large datasets
+- [ ] Advanced testing (database testing, HTTP testing)
+- [ ] Documentation generation
+- [ ] Security hardening
+- [ ] Developer tools (debug bar, profiler)
+
+KEY PRINCIPLES
+==============
+
+1. NO EXTERNAL DEPENDENCIES: Pure PHP and vanilla JavaScript only
+2. MODULAR DESIGN: Each component should be independent and replaceable
+3. SECURITY FIRST: All user input must be validated and sanitized
+4. PERFORMANCE CONSCIOUS: Optimize for speed and memory usage
+5. CLEAN CODE: Follow PSR-12 coding standards, proper documentation
+6. TESTABILITY: Design components to be easily testable
+7. BACKWARD COMPATIBILITY: Avoid breaking changes once established
+
+DEVELOPMENT WORKFLOW
+====================
+
+1. Create feature branch for each major component
+2. Write tests first where applicable
+3. Implement core functionality
+4. Add documentation comments
+5. Test manually and with automated tests
+6. Code review before merging to main
+7. Update this roadmap document as needed
+
+SUCCESS METRICS
+===============
+- 90%+ test coverage for core components
+- Page load times under 200ms for typical requests
+- Developer onboarding time under 1 day
+- Zero critical security vulnerabilities
+- 50% reduction in development time compared to raw PHP
+
+MAINTENANCE PLAN
+================
+- Weekly framework updates and security patches
+- Monthly performance reviews
+- Quarterly feature additions based on team feedback
+- Annual architecture review and refactoring
+
+This document serves as the living specification for our custom PHP framework. All framework development should align with these guidelines and priorities.
