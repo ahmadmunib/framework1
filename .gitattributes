@@ -3,9 +3,10 @@
 
 # Exclude from export (when using `git archive` or Composer packages)
 /docs export-ignore
-/tests export-ignore
-/.gitattributes export-ignore
-/.gitignore export-ignore
+/storage/uploads/ export-ignore
+/storage/cache/ export-ignore
+/storage/logs/ export-ignore
+/docs/practical-map/ export-ignore
 /phpunit.xml export-ignore
 /phpunit.xml.dist export-ignore
 /.editorconfig export-ignore

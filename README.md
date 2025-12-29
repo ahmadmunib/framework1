@@ -26,6 +26,9 @@ mkdir -p storage/logs storage/cache storage/uploads
 
 # Start development server
 php -S localhost:8000 -t public
+
+# List framework CLI commands
+php fx list
 ```
 
 Visit `http://localhost:8000` to see your application running.
@@ -67,6 +70,16 @@ $id = DB::table('users')->insert([
 // Access config values
 $appName = config('app.name');
 $dbHost = config('database.connections.mysql.host');
+```
+
+### Generate Controllers (Artisan-style)
+
+```bash
+# Create app/Http/Controllers/UserController.php
+php fx make:controller UserController
+
+# Support nested namespaces (creates app/Http/Controllers/Admin/UserController.php)
+php fx make:controller Admin/UserController
 ```
 
 ## Requirements
