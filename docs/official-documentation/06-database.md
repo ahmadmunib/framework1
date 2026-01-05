@@ -23,6 +23,20 @@ return [
 ];
 ```
 
+### Configure via CLI
+
+Use the fx command to write both `.env` and `config/database.php`:
+
+```bash
+php fx configure:database driver=mysql host=127.0.0.1 port=3306 database=app username=root password=secret test=true
+```
+
+- Supports `driver` = mysql | pgsql | sqlite.
+- Writes `.env` keys: `DB_DRIVER`, `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`.
+- Updates `config/database.php` default connection and driver-specific settings.
+- `test=true` runs a live PDO connection test (fails with error message if it cannot connect).
+- Requires PDO + driver extension (`pdo_mysql`, `pdo_pgsql`, or `pdo_sqlite`).
+
 ## Connection
 
 ### Basic Usage

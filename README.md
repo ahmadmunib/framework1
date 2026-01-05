@@ -85,7 +85,10 @@ php fx make:controller Admin/UserController
 php fx make:routes
 
 # Configure app settings (.env + config/app.php)
-php fx configure:app name="My App" env=local debug=true timezone=UTC url=http://localhost
+php fx configure:app name="DIS App" env=local debug=true timezone=Asia/Muscat url=http://localhost
+
+# Configure database (.env + config/database.php, optional connection test)
+php fx configure:database driver=mysql host=127.0.0.1 port=3306 database=app username=root password=secret test=true
 ```
 
 ## Requirements
