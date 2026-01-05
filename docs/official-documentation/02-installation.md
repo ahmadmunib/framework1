@@ -32,10 +32,48 @@ chmod -R 775 storage
 2. Extract to your desired location
 3. Create the storage directories manually
 
-### Method 3: Composer (if published)
+### Method 3: Composer
+
+#### Packagist (preferred)
 
 ```bash
-composer create-project dis/framework my-project
+# Add to an existing project
+composer require ahmadmunib/framework1
+
+# Or create a new project
+composer create-project ahmadmunib/framework1 my-project
+```
+
+#### VCS repository (if using Git repo directly)
+
+Add to your consuming project's `composer.json`:
+
+```json
+{
+  "repositories": [
+    { "type": "vcs", "url": "https://github.com/ahmadmunib/framework1" }
+  ]
+}
+```
+
+Then install:
+
+```bash
+composer require ahmadmunib/framework1:dev-master
+```
+
+#### Local path (for local testing)
+
+```json
+{
+  "repositories": [
+    { "type": "path", "url": "../framework1", "options": { "symlink": true } }
+  ]
+}
+```
+
+```bash
+composer require ahmadmunib/framework1:*
 ```
 
 ## Web Server Configuration
