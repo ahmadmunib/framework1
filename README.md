@@ -123,6 +123,14 @@ Full documentation is available in the [docs/official-documentation](docs/offici
 └── tests/              # Test files
 ```
 
+## Changelog
+
+### v1.1.0
+- Added `php fx make:routes` to scaffold `routes/web.php` and `routes/api.php`.
+- Added `php fx configure:app` to write `.env` and sync `config/app.php`.
+- Added `php fx configure:database` with PDO/driver check, `.env` + `config/database.php` sync, and optional connection test.
+- Documented composer scripts that ensure storage directories exist after install/update.
+
 ## License
 
 MIT License - see [LICENSE](LICENSE) file for details.
