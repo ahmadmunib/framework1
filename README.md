@@ -21,7 +21,7 @@ A lightweight, Laravel-inspired PHP framework with zero external dependencies.
 git clone https://github.com/your-org/dis-framework.git my-project
 cd my-project
 
-# Create storage directories
+# Create storage directories (composer scripts also ensure these on install/update)
 mkdir -p storage/logs storage/cache storage/uploads
 
 # Start development server

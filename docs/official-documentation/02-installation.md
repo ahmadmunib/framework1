@@ -20,7 +20,7 @@ git clone https://github.com/your-org/dis-framework.git my-project
 cd my-project
 
 # Create required directories
-mkdir -p storage/logs storage/cache storage/uploads
+mkdir -p storage/logs storage/cache storage/uploads  # composer scripts also ensure these on install/update
 
 # Set permissions (Linux/Mac)
 chmod -R 775 storage
