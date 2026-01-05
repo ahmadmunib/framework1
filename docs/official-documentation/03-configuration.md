@@ -124,6 +124,20 @@ return [
 ];
 ```
 
+## Configuring via CLI
+
+You can set common app settings through the CLI:
+
+```bash
+php fx configure:app name="My App" env=local debug=true timezone=UTC url=http://localhost
+```
+
+This command will:
+- Create or update `.env` with `APP_NAME`, `APP_ENV`, `APP_DEBUG`, `APP_TIMEZONE`, `APP_URL`, `APP_LOCALE`.
+- Synchronize `config/app.php` with the provided values.
+
+Use `debug=false` for production and adjust timezone/locale as needed.
+
 ### Setting Environment Variables
 
 **Method 1: Server Configuration**

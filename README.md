@@ -83,6 +83,9 @@ php fx make:controller Admin/UserController
 
 # Scaffold routes files (routes/web.php and routes/api.php)
 php fx make:routes
+
+# Configure app settings (.env + config/app.php)
+php fx configure:app name="My App" env=local debug=true timezone=UTC url=http://localhost
 ```
 
 ## Requirements
@@ -124,3 +127,6 @@ MIT License - see [LICENSE](LICENSE) file for details.
 ## Author
 
 Ahmad Munib - Technical Team Lead
+Digital Intelligense Solutions LLC
+https://dis-tech.net
+https://github.com/ahmadmunib

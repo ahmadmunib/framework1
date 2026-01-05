@@ -28,6 +28,7 @@ class Application
     {
         $this->register(new Commands\MakeControllerCommand());
         $this->register(new Commands\MakeRoutesCommand());
+        $this->register(new Commands\ConfigureAppCommand());
     }
 
     /**
