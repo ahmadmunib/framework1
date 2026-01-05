@@ -20,12 +20,25 @@
             "framework/Helpers/helpers.php"
         ]
     },
-    "bin": ["fx"],
-    "keywords": ["framework", "php", "cli", "laravel-like"],
+    "bin": [
+        "fx"
+    ],
+    "keywords": [
+        "framework",
+        "php",
+        "cli",
+        "laravel-like"
+    ],
     "require-dev": {
         "phpunit/phpunit": "^9.0"
     },
     "scripts": {
-        "test": "phpunit"
+        "test": "phpunit",
+        "post-install-cmd": [
+            "@php -r \"@mkdir('storage/logs', 0775, true); @mkdir('storage/cache', 0775, true); @mkdir('storage/uploads', 0775, true);\""
+        ],
+        "post-update-cmd": [
+            "@php -r \"@mkdir('storage/logs', 0775, true); @mkdir('storage/cache', 0775, true); @mkdir('storage/uploads', 0775, true);\""
+        ]
     }
 }

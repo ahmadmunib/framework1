@@ -27,6 +27,7 @@ class Application
     protected function registerDefaultCommands(): void
     {
         $this->register(new Commands\MakeControllerCommand());
+        $this->register(new Commands\MakeRoutesCommand());
     }
 
     /**

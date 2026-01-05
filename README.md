@@ -80,6 +80,9 @@ php fx make:controller UserController
 
 # Support nested namespaces (creates app/Http/Controllers/Admin/UserController.php)
 php fx make:controller Admin/UserController
+
+# Scaffold routes files (routes/web.php and routes/api.php)
+php fx make:routes
 ```
 
 ## Requirements
